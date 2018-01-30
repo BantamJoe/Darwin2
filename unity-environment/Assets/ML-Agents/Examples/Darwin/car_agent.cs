@@ -49,8 +49,10 @@ public class car_agent : Agent
     {
         if (text != null)
             text.text = string.Format("C:({0},{1}) / T:({2},{3})", currentX, currentZ, targetX, targetZ);
+
         switch ((int)action[0])
         {
+
             case 0:
                 speed += 0.1f;
                 break;
@@ -77,11 +79,34 @@ public class car_agent : Agent
         pre_distance = distance;
         distance = Mathf.Sqrt(sideALength * sideALength + sideBLength * sideBLength);
 
+        if(distance <= 0.1)
+        {
+            reward = 1;
+            done = true;
+            return;
+        }
+
+        if(distance < pre_distance)
+        {
+
+            reward = 0.5f;
+            return;
+
+        }
+
+        reward = -0.1f * distance;
+        done = false;
+        return;
         
     }
 
     public override void AgentReset()
     {
- 
+        targetX = UnityEngine.Random.RandomRange(-1f, 1f);
+        targetZ = UnityEngine.Random.RandomRange(-1f, 1f);
+        sphere.position = new Vector3(targetX * 5, 3, targetZ * 5);
+        currentX = 0f;
+        currentZ = 0f;
+        cube.position = new Vector3(currentX * 5, 3, currentZ * 5);
     }
 }

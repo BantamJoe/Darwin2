@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/ML-Agents/Examples/Darwin/env.unity
+    guid: 496e053719e7c7f489d0bc4b63957fd2
+  - enabled: 0
     path: Assets/ML-Agents/Examples/Test01.unity
     guid: 16c3a1efc27108f47ba40eb0cebd04ad
   - enabled: 0
