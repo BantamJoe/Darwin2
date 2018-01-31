@@ -105,7 +105,7 @@ public class car_agent : Agent
             reward = -0.3f;
         }
 
-        reward = (-1.7f * distance) + (-1.2 * (100 - power));
+        reward = (-1.7f * distance) + (-1.2f * (100 - power));
         done = false;
         return;
         
