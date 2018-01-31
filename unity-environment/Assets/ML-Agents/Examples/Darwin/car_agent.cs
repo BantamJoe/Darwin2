@@ -48,27 +48,34 @@ public class car_agent : Agent
     public override void AgentStep(float[] action)
     {
         if (text != null)
-            text.text = string.Format("C:({0},{1}) / T:({2},{3})", currentX, currentZ, targetX, targetZ);
+            text.text = string.Format("C:({0},{1}) / T:({2},{3})    [{4}]", currentX, currentZ, targetX, targetZ, solved);
 
         switch ((int)action[0])
         {
 
             case 0:
-                speed += 0.1f;
+                speed += 0.005f;
+                power -= 0.005f;
                 break;
             case 1:
-                speed -= 0.1f;
+                speed -= 0.005f;
+                power -= 0.005f;
                 break;
             case 2:
-                angle += 0.05f;
+                angle += 0.01f;
+                power -= 0.01f;
                 break;
             case 3:
-                angle -= 0.05f;
+                angle -= 0.01f;
+                power -= 0.01f;
                 break;
             defult:
                 return;
 
         }
+
+        currentX = cube.GetComponent<Transform> ().position.x;
+        currentZ = cube.GetComponent<Transform>().position.z;
 
         cube.transform.Translate(Vector3.forward * speed );
         cube.transform.Rotate(Vector3.up, angle);
@@ -79,8 +86,9 @@ public class car_agent : Agent
         pre_distance = distance;
         distance = Mathf.Sqrt(sideALength * sideALength + sideBLength * sideBLength);
 
-        if(distance <= 0.1)
+        if(distance <= 0.5)
         {
+            solved++;
             reward = 1;
             done = true;
             return;
@@ -89,12 +97,15 @@ public class car_agent : Agent
         if(distance < pre_distance)
         {
 
-            reward = 0.5f;
-            return;
+            reward = 0.3f;
 
         }
+        else
+        {
+            reward = -0.3f;
+        }
 
-        reward = -0.1f * distance;
+        reward = (-1.7f * distance) + (-1.2f * (100 - power));
         done = false;
         return;
         
@@ -102,9 +113,12 @@ public class car_agent : Agent
 
     public override void AgentReset()
     {
+        power = 100;
+        angle = 0;
+        speed = 0;
         targetX = UnityEngine.Random.RandomRange(-1f, 1f);
         targetZ = UnityEngine.Random.RandomRange(-1f, 1f);
-        sphere.position = new Vector3(targetX * 5, 3, targetZ * 5);
+        sphere.position = new Vector3(targetX * 20, 3, targetZ * 20);
         currentX = 0f;
         currentZ = 0f;
         cube.position = new Vector3(currentX * 5, 3, currentZ * 5);
